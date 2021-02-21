@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1091285302003",
+    "project_id": "weatherforecast-305208",
+    "storage_bucket": "weatherforecast-305208.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091285302003:android:1de2fd5a5d1c2812161586",
+        "android_client_info": {
+          "package_name": "com.dilip.weatherforecast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091285302003-g1adipb8li7deivumqcbkdaa3fp0r69t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJSTNA7rTLWSGL_1_nGnOv_at2ntklF_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091285302003-g1adipb8li7deivumqcbkdaa3fp0r69t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
