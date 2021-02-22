@@ -2,6 +2,9 @@ package com.dilip.weatherforecast
 
 //import com.dilip.weatherforecast.data.local.DatabaseBuilder
 //import com.dilip.weatherforecast.data.local.DatabaseHelperImpl
+import PreferenceHelper.customPreference
+import PreferenceHelper.lan
+import PreferenceHelper.lat
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,13 +25,10 @@ import com.dilip.weatherforecast.util.ViewModelFactory
 import com.dilip.weatherforecast.viewmodels.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.CancellationToken
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weatherViewModel: WeatherViewModel
     private val AUTOCOMPLETE_REQUEST_CODE = 1
     private val degree :String = "°"
+    val CUSTOM_PREF_NAME = "location_data"
 
     private val MY_PERMISSIONS_REQUEST_LOCATION = 101
     private var isPermission = false
@@ -83,8 +84,12 @@ class MainActivity : AppCompatActivity() {
                         // Logic to handle location object
                         val currentLat = location.latitude
                         val currentLang = location.longitude
-
                         Log.e("latitude permission :$currentLat", " logitude :$currentLang")
+
+                        val prefs = customPreference(this, CUSTOM_PREF_NAME)
+                            prefs.lat = currentLat.toString()
+                            prefs.lan = currentLang.toString()
+                        Log.e("latitude Pref :${prefs.lan}", " logitude :${prefs.lan}")
                     }
                 }
 
@@ -253,10 +258,10 @@ class MainActivity : AppCompatActivity() {
                         val currentLang = location.longitude
                         Log.e("LAT: $currentLat", "Long $currentLang")
 
-                       /* Prefs.getInstance().setCurrentLat(currentLat.toString())
-                        Prefs.getInstance().setCurrentLng(currentLang.toString())
-                        startActivity(Intent(this@SplashActivity, DashboardActivity::class.java))
-                        finish()*/
+                        val prefs = customPreference(this, CUSTOM_PREF_NAME)
+                        prefs.lat = currentLat.toString()
+                        prefs.lan = currentLang.toString()
+                        Log.e("latitude Pref first  :${prefs.lan}", " logitude :${prefs.lan}")
 
                     }
                 }

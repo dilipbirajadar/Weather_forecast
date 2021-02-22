@@ -1,11 +1,13 @@
 package com.dilip.weatherforecast
 
+import android.database.sqlite.SQLiteDatabase
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.dilip.weatherforecast.data.local.dao.SQLHelper
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,21 +33,27 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Sydney and move the camera
         val address = LatLng(18.589800, 73.743202)
         mMap.addMarker(
-            MarkerOptions()
-                .position(address)
-                .title("Marker in Pune")
+                MarkerOptions()
+                        .position(address)
+                        .title(getAddress(address.latitude, address.longitude))
         )
         mMap.moveCamera(CameraUpdateFactory.newLatLng(address))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(address, 15f))
 
         mMap.setOnMapClickListener {
             mMap.addMarker(
                 MarkerOptions()
                     .position(LatLng(it.latitude, it.longitude))
-                    .title(getAddress(it.latitude,it.longitude))
+                    .title(getAddress(it.latitude, it.longitude))
+
+                    /**
+                     * todo add location in sqlite
+                     */
+
             )
 
 

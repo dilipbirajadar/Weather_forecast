@@ -1,7 +1,7 @@
 package com.dilip.weatherforecast.extension
 
-import android.widget.ImageView
-import com.dilip.weatherforecast.R
+import android.annotation.SuppressLint
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -23,3 +23,8 @@ fun getKelVintoCelcius(temprature: Double):String{
     return tempInCel.roundToInt().toString()+"°"
 }
 
+/*This method returns time in String format with pattern yyyy-MM-dd HH:mm:ss*/
+fun getFormatTime(): String? {
+    @SuppressLint("SimpleDateFormat") val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    return dateFormat.format(Date(System.currentTimeMillis()))
+}
