@@ -9,7 +9,7 @@ import com.dilip.weatherforecast.MainActivity
 import com.dilip.weatherforecast.R
 
 class DataAdapter(
-        private val mDataset: ArrayList<String>,
+        private val mDataset: MutableList<String>,
         internal var recyclerViewItemClickListener: MainActivity
 ) : RecyclerView.Adapter<DataAdapter.LocationViewHolder>() {
 

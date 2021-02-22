@@ -1,7 +1,5 @@
 package com.dilip.weatherforecast
 
-//import com.dilip.weatherforecast.data.local.DatabaseBuilder
-//import com.dilip.weatherforecast.data.local.DatabaseHelperImpl
 import PreferenceHelper.customPreference
 import PreferenceHelper.lan
 import PreferenceHelper.lat
@@ -34,7 +32,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 
@@ -43,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val AUTOCOMPLETE_REQUEST_CODE = 1
     private val degree :String = "°"
     val CUSTOM_PREF_NAME = "location_data"
-
+    var mutableList : MutableList<String> = mutableListOf()
     private val MY_PERMISSIONS_REQUEST_LOCATION = 101
     private var isPermission = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -65,51 +62,39 @@ class MainActivity : AppCompatActivity() {
         val db: SQLiteDatabase = helper.getReadableDatabase()
 
         val cursor = db.rawQuery("select * from location ", arrayOf())
+        var city:String
         cursor?.moveToFirst()
         if (cursor.count > 0) {
             do {
                 val id = cursor.getInt(0)
                 val lat = cursor.getString(1)
                 val lan = cursor.getString(2)
-                val city = cursor.getString(3)
+                city = cursor.getString(3)
 
                 Log.e("databse entry:",id.toString()+lat+lan+city)
-
-
+                //mutableList  = mutableListOf("city")
+                mutableList.add(city)
             }while (cursor.moveToNext())
+
+
 
         }
 
-         var items = arrayListOf(
-                "Apple Apple Apple ",
-                "Banana",
-                "Orange",
-                "Grapes",
-                "Apple",
-                "Banana",
-                "Orange",
-                "Grapes",
-                "Apple",
-                "Banana",
-                "Orange",
-                "Grapes",
-                "Apple",
-                "Banana",
-                "Orange",
-                "Grapes",
-                "Apple",
-                "Banana",
-                "Orange",
-                "Grapes"
-        )
+         /*var items = mutableListOf(
+               mutableList
+        )*/
 
+        if(mutableList.size>0) {
 
-        val dataAdapter = DataAdapter(items, this)
-        customDialog = CustomListViewDialog(this, dataAdapter)
+            val dataAdapter = DataAdapter(mutableList, this)
+            customDialog = CustomListViewDialog(this, dataAdapter)
 
-        //if we know that the particular variable not null any time ,we can assign !! (not null operator ), then  it won't check for null, if it becomes null, it willthrow exception
-        customDialog!!.show()
-        customDialog!!.setCanceledOnTouchOutside(false)
+            //if we know that the particular variable not null any time ,we can assign !! (not null operator ), then  it won't check for null, if it becomes null, it willthrow exception
+            customDialog!!.show()
+            customDialog!!.setCanceledOnTouchOutside(false)
+        }else{
+            Toast.makeText(this,"No fav location",Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun permissionSetup() {
