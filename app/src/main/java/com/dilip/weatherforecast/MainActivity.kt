@@ -8,6 +8,7 @@ import PreferenceHelper.lat
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -20,6 +21,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.dilip.weatherforecast.data.api.ApiHelperImpl
 import com.dilip.weatherforecast.data.api.RetrofitBuilder
+import com.dilip.weatherforecast.data.local.dao.SQLHelper
 import com.dilip.weatherforecast.util.Status
 import com.dilip.weatherforecast.util.ViewModelFactory
 import com.dilip.weatherforecast.viewmodels.WeatherViewModel
@@ -51,6 +53,27 @@ class MainActivity : AppCompatActivity() {
         setupViewModel()
         setupObserver()
 
+
+    }
+
+    private fun getDataFromDb() {
+        val helper = SQLHelper(this)
+        val db: SQLiteDatabase = helper.getReadableDatabase()
+
+        val cursor = db.rawQuery("select * from location ", arrayOf())
+        cursor?.moveToFirst()
+        if (cursor.count > 0) {
+            do {
+                val id = cursor.getInt(0)
+                val lat = cursor.getString(1)
+                val lan = cursor.getString(2)
+                val city = cursor.getString(3)
+
+                Log.e("databse entry:",id.toString()+lat+lan+city)
+
+            }while (cursor.moveToNext())
+
+        }
     }
 
     private fun permissionSetup() {
@@ -60,24 +83,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPermissin() {
         if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                )
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), MY_PERMISSIONS_REQUEST_LOCATION
+                    this,
+                    arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    ), MY_PERMISSIONS_REQUEST_LOCATION
             )
         } else {
             isPermission = true
 
             fusedLocationClient!!.lastLocation
                 .addOnSuccessListener(
-                    this
+                        this
                 ) { location ->
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {
@@ -120,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                     textViewTemperature.setText(getKelVintoCelcius(it.data!!.main.temp))
                     textViewHumidity.setText(it.data.main.humidity.toString().plus(degree))
                     textViewWeatherMain.setText(
-                        it.data.weather[0].main.plus(" ").plus(it.data.weather[0].description)
+                            it.data.weather[0].main.plus(" ").plus(it.data.weather[0].description)
                     )
                     loadImage(it.data.weather[0].icon)
                     textViewMinTemp.setText(getKelVintoCelcius(it.data.main.temp_min))
@@ -146,11 +169,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         weatherViewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(
-                ApiHelperImpl(RetrofitBuilder.apiService),
-                //DatabaseHelperImpl(DatabaseBuilder.getInstance(applicationContext))
-            )
+                this,
+                ViewModelFactory(
+                        ApiHelperImpl(RetrofitBuilder.apiService),
+                        //DatabaseHelperImpl(DatabaseBuilder.getInstance(applicationContext))
+                )
         ).get(WeatherViewModel::class.java)
     }
 
@@ -234,22 +257,22 @@ class MainActivity : AppCompatActivity() {
      }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == 101) {
             isPermission = true
             if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    )
                 == PackageManager.PERMISSION_GRANTED
             ) fusedLocationClient!!.lastLocation
                 .addOnSuccessListener(
-                    this
+                        this
                 ) { location ->
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {

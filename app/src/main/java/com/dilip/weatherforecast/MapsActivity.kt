@@ -1,6 +1,7 @@
 package com.dilip.weatherforecast
 
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dilip.weatherforecast.data.local.dao.SQLHelper
+import com.dilip.weatherforecast.extension.getFormatTime
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,9 +23,12 @@ import java.util.*
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-
+    private var databaseHandler: SQLHelper? = null
+    private var db :SQLiteDatabase? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+         databaseHandler = SQLHelper(this)
+         db = databaseHandler!!.getWritableDatabase()
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -46,16 +51,15 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.setOnMapClickListener {
             mMap.addMarker(
-                MarkerOptions()
-                    .position(LatLng(it.latitude, it.longitude))
-                    .title(getAddress(it.latitude, it.longitude))
-
-                    /**
-                     * todo add location in sqlite
-                     */
+                    MarkerOptions()
+                            .position(LatLng(it.latitude, it.longitude))
+                            .title(getAddress(it.latitude, it.longitude))
 
             )
-
+            /**
+             * add location in sqlite
+             */
+            db?.let { it1 -> databaseHandler?.insertLocation(it?.latitude.toString(), it?.longitude.toString(),getAddress(it.latitude, it.longitude), getFormatTime(), it1) }
 
         }
     }
