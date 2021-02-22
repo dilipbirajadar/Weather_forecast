@@ -1,6 +1,6 @@
 # Weather_forecast
 
-To introduce the terminology, here is a short introduction to the Architecture Components and how they work together. 
+To introduce the terminology, here is a short introduction to the Wather app with Architecture Components and how they work together. 
 Note that this focuses on a subset of the components, namely LiveData, ViewModel and Room/Sqlite
 Each component is explained more as you use it.
 
