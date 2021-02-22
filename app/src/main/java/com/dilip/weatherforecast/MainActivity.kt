@@ -19,9 +19,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.dilip.weatherforecast.adapter.DataAdapter
 import com.dilip.weatherforecast.data.api.ApiHelperImpl
 import com.dilip.weatherforecast.data.api.RetrofitBuilder
 import com.dilip.weatherforecast.data.local.dao.SQLHelper
+import com.dilip.weatherforecast.util.CustomListViewDialog
 import com.dilip.weatherforecast.util.Status
 import com.dilip.weatherforecast.util.ViewModelFactory
 import com.dilip.weatherforecast.viewmodels.WeatherViewModel
@@ -32,6 +34,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private val MY_PERMISSIONS_REQUEST_LOCATION = 101
     private var isPermission = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    internal var customDialog: CustomListViewDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,9 +75,41 @@ class MainActivity : AppCompatActivity() {
 
                 Log.e("databse entry:",id.toString()+lat+lan+city)
 
+
             }while (cursor.moveToNext())
 
         }
+
+         var items = arrayListOf(
+                "Apple Apple Apple ",
+                "Banana",
+                "Orange",
+                "Grapes",
+                "Apple",
+                "Banana",
+                "Orange",
+                "Grapes",
+                "Apple",
+                "Banana",
+                "Orange",
+                "Grapes",
+                "Apple",
+                "Banana",
+                "Orange",
+                "Grapes",
+                "Apple",
+                "Banana",
+                "Orange",
+                "Grapes"
+        )
+
+
+        val dataAdapter = DataAdapter(items, this)
+        customDialog = CustomListViewDialog(this, dataAdapter)
+
+        //if we know that the particular variable not null any time ,we can assign !! (not null operator ), then  it won't check for null, if it becomes null, it willthrow exception
+        customDialog!!.show()
+        customDialog!!.setCanceledOnTouchOutside(false)
     }
 
     private fun permissionSetup() {
@@ -180,9 +216,16 @@ class MainActivity : AppCompatActivity() {
     private fun setUpUI() {
 
         val txtView :TextView = findViewById(R.id.addLocation)
+        val viewLocation :TextView = findViewById(R.id.viewLocation)
 
         txtView.setOnClickListener {
             startActivity(Intent(this@MainActivity, MapsActivity::class.java))
+        }
+
+        viewLocation.setOnClickListener {
+            //startActivity(Intent(this@MainActivity, MapsActivity::class.java))
+            getDataFromDb()
+
         }
 
         /**
